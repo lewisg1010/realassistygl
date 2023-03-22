@@ -8,32 +8,21 @@ import styles from '@/styles/Home.module.css'
 
 export default function Home() {
 
-  const [data, setData] = useState('');
+  const [listings, setListings] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        
-        const response = await fetch('/api/search', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: 'key=GdFSoyKUT52NLfvpw06ZIPlYbQqEzOga8i1h3mC9'
-        });
+    const apiUrl = 'https://crossorigin.me/https://www.yougotlistings.com/api/rentals/search.php';
+    const apiKey = 'GdFSoyKUT52NLfvpw06ZIPlYbQqEzOga8i1h3mC9';
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const result = await response.text();
-        setData(result);
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-
-    fetchData();
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `key=${apiKey}`,
+    })
+      .then(response => response.json())
+      .then(data => setListings(data));
   }, []);
 
   return (
@@ -46,12 +35,15 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <div className={styles.description}>
-        {/* <ul>
-        {rentals.map((rental) => (
-          <li key={rental.id}>{rental.title}</li>
+
+        <p>data below</p>
+        <p>{listings}</p>
+        <ul>
+        {listings.map(listing => (
+          <li key={listing}>{listing}</li>
+
         ))}
-      </ul> */}
-        <p>{data}</p>
+      </ul>
         </div>
       </main>
     </>
